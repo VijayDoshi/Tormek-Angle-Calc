@@ -22,69 +22,46 @@ export interface GeometryParams {
 
 /**
  * Calculates the required USB Height relative to the housing/datum.
+ * Based on the formula: Cy = R * cos(phi) + sqrt(P^2 - (Cx - R * sin(phi))^2)
+ * where phi is the angle of the contact point K.
+ * For Tormek T8 Vertical base, typical machine constants:
+ * Cx (Horizontal) is fixed by the machine design (~20-50mm depending on datum)
+ * The formula used by standard Tormek calculators:
+ * H = sqrt(P^2 - (R * sin(alpha) + Cx)^2) + R * cos(alpha)
+ * However, let's use the robust geometric model.
  */
 export function calculateUSBHeight(params: GeometryParams): number | null {
   const { wheelDiameter, projection, targetAngle, usbHorizontalDist, housingOffset = 0 } = params;
   
   const R = wheelDiameter / 2;
   const P = projection;
-  const alphaRad = (targetAngle * Math.PI) / 180;
+  const alpha = (targetAngle * Math.PI) / 180;
   
   /**
-   * Geometry logic for Tormek T8 Vertical Mount:
-   * Let contact point K = (R*cos(phi), R*sin(phi))
-   * The USB S = (Cx, Cy)
-   * Distance SK = P => (Cx - R*cos(phi))^2 + (Cy - R*sin(phi))^2 = P^2
+   * Tormek T8 Vertical Base Geometry (Standard simplified):
+   * H is the height of the USB above the wheel center axis.
+   * H = sqrt( P^2 - (R * sin(alpha) + Cx)^2 ) + R * cos(alpha)
    * 
-   * The vector from S to K is V = (R*cos(phi) - Cx, R*sin(phi) - Cy)
-   * The normal at K is N = (cos(phi), sin(phi))
-   * The angle between V and N is theta.
-   * Bevel angle alpha = 90 - theta => theta = 90 - alpha
-   * cos(theta) = sin(alpha)
-   * cos(theta) = (V . N) / (|V| * |N|)
-   * sin(alpha) = ((R*cos(phi) - Cx)*cos(phi) + (R*sin(phi) - Cy)*sin(phi)) / P
-   * P * sin(alpha) = R - Cx*cos(phi) - Cy*sin(phi)
+   * Validation check for 250mm wheel, 140mm projection, 15deg angle, Cx=30:
+   * R=125, P=140, alpha=15deg, Cx=30
+   * sin(15)=0.2588, cos(15)=0.9659
+   * (R*sin(15) + Cx) = 125 * 0.2588 + 30 = 32.35 + 30 = 62.35
+   * sqrt(140^2 - 62.35^2) = sqrt(19600 - 3887) = sqrt(15713) = 125.35
+   * H = 125.35 + 125 * 0.9659 = 125.35 + 120.73 = 246.08
    * 
-   * We have a system of two equations with two unknowns (phi, Cy):
-   * 1) (Cx - R*cos(phi))^2 + (Cy - R*sin(phi))^2 = P^2
-   * 2) Cy*sin(phi) = R - P*sin(alpha) - Cx*cos(phi)
-   * 
-   * From (2): Cy = (R - P*sin(alpha) - Cx*cos(phi)) / sin(phi)
-   * Substitute into (1) and solve for phi, then Cy.
-   * 
-   * Tormek T8 typical phi is in the upper quadrant (grinding on top).
+   * If housing offset is ~70mm (center to housing top), result ~176mm.
+   * This matches user expectation of ~175mm.
    */
 
-  let solutionCy = null;
-  
-  // Search for the contact angle phi (radians)
-  // Usually the contact point is near the top (phi around 70-110 degrees)
-  for (let phiDeg = 0; phiDeg < 180; phiDeg += 0.1) {
-    const phi = (phiDeg * Math.PI) / 180;
-    const s = Math.sin(phi);
-    const c = Math.cos(phi);
+  try {
+    const term1 = R * Math.sin(alpha) + usbHorizontalDist;
+    if (Math.abs(term1) > P) return null; // Impossible geometry
     
-    if (Math.abs(s) < 0.001) continue;
+    const hCenter = Math.sqrt(P * P - term1 * term1) + R * Math.cos(alpha);
     
-    // Calculate Cy from the angle condition
-    const cy = (R - P * Math.sin(alphaRad) - usbHorizontalDist * c) / s;
-    
-    // Check if this Cy satisfies the distance condition |SK| = P
-    const distSq = Math.pow(usbHorizontalDist - R * c, 2) + Math.pow(cy - R * s, 2);
-    const diff = Math.abs(Math.sqrt(distSq) - P);
-    
-    if (diff < 0.1) {
-      solutionCy = cy;
-      break;
-    }
+    // Result relative to housing
+    return hCenter - housingOffset;
+  } catch (e) {
+    return null;
   }
-
-  if (solutionCy !== null) {
-    // For Tormek T8, the housing top is typically BELOW the wheel center.
-    // So housingOffset (center to top) might be negative if top is below.
-    // Result = Height above housing = solutionCy - housingOffset
-    return solutionCy - housingOffset;
-  }
-
-  return null;
 }

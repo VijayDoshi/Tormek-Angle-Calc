@@ -17,8 +17,13 @@ function Calculator() {
 
   // Local state for immediate UI response
   const [wheelId, setWheelId] = useState<string>("");
+  const [customDiameter, setCustomDiameter] = useState<string>("250");
   const [projection, setProjection] = useState<string>("140");
   const [angle, setAngle] = useState<string>("15");
+
+  const activeWheel = useMemo(() => 
+    wheels?.find(w => w.id === Number(wheelId)), 
+  [wheels, wheelId]);
 
   // Sync with loaded state once
   useEffect(() => {
@@ -29,26 +34,31 @@ function Calculator() {
     }
   }, [savedState, isStateLoading]);
 
+  // Sync custom diameter when wheel changes
+  useEffect(() => {
+    if (activeWheel) {
+      setCustomDiameter(String(activeWheel.diameter));
+    }
+  }, [activeWheel]);
+
   // Derive result
   const result = useMemo(() => {
     if (!settings || !wheels || !wheelId) return null;
     
-    const selectedWheel = wheels.find(w => w.id === Number(wheelId));
-    if (!selectedWheel) return null;
-
+    const d = parseFloat(customDiameter);
     const p = parseFloat(projection);
     const a = parseFloat(angle);
 
-    if (isNaN(p) || isNaN(a)) return null;
+    if (isNaN(d) || isNaN(p) || isNaN(a)) return null;
 
     return calculateUSBHeight({
-      wheelDiameter: selectedWheel.diameter,
+      wheelDiameter: d,
       projection: p,
       targetAngle: a,
       usbHorizontalDist: settings.usbHorizontalDistance,
       housingOffset: settings.wheelCenterToHousingTop,
     });
-  }, [settings, wheels, wheelId, projection, angle]);
+  }, [settings, wheels, wheelId, customDiameter, projection, angle]);
 
   // Debounce updates to backend
   useEffect(() => {
@@ -100,27 +110,33 @@ function Calculator() {
         {/* INPUTS */}
         <div className="grid gap-6">
           
-          {/* Wheel Selector */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-muted-foreground ml-1">Grinding Wheel</Label>
-            <Select value={wheelId} onValueChange={setWheelId}>
-              <SelectTrigger className="h-14 rounded-xl border-border/60 bg-white/50 dark:bg-black/20 text-lg font-medium shadow-sm">
-                <SelectValue placeholder="Select Wheel" />
-              </SelectTrigger>
-              <SelectContent>
-                {wheels.map((w) => (
-                  <SelectItem key={w.id} value={String(w.id)} className="text-base py-3">
-                    <span className="font-medium">{w.name}</span>
-                    <span className="ml-2 text-muted-foreground text-sm">({Math.round(w.diameter)}mm)</span>
-                  </SelectItem>
-                ))}
-                {wheels.length === 0 && (
-                  <div className="p-4 text-center text-sm text-muted-foreground">
-                    No wheels found. Go to Wheels tab to add one.
-                  </div>
-                )}
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Wheel Selector */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground ml-1">Grinding Wheel</Label>
+              <Select value={wheelId} onValueChange={setWheelId}>
+                <SelectTrigger className="h-14 rounded-xl border-border/60 bg-white/50 dark:bg-black/20 text-lg font-medium shadow-sm">
+                  <SelectValue placeholder="Select Wheel" />
+                </SelectTrigger>
+                <SelectContent>
+                  {wheels.map((w) => (
+                    <SelectItem key={w.id} value={String(w.id)} className="text-base py-3">
+                      <span className="font-medium">{w.name}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Current Diameter */}
+            <InputNumber
+              label="Current Diameter"
+              unit="mm"
+              value={customDiameter}
+              onChange={(e) => setCustomDiameter(e.target.value)}
+              onIncrement={() => setCustomDiameter((p) => String((parseFloat(p) + 1).toFixed(1)))}
+              onDecrement={() => setCustomDiameter((p) => String((parseFloat(p) - 1).toFixed(1)))}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">

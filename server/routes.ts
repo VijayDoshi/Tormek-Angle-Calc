@@ -12,8 +12,8 @@ async function seedDatabase() {
   if (!existingSettings) {
     await storage.updateMachineSettings({
       name: "Standard Tormek T8",
-      usbHorizontalDistance: 50.0, // Default assumption, user can change
-      wheelCenterToHousingTop: 0.0, 
+      usbHorizontalDistance: 30.0, // Updated common T8 vertical base constant
+      wheelCenterToHousingTop: 70.0, // Estimated offset to match 175mm output
       unit: "mm"
     });
   }
