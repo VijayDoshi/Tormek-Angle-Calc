@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { InputNumber } from "@/components/ui/InputNumber";
 import { Loader2, Ruler, Triangle, CircleDashed } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounce"; // Assuming generic hook or I will define inline if simple
 
 function Calculator() {
   const { data: settings } = useSettings();
