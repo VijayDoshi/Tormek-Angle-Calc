@@ -10,11 +10,11 @@ export const machineSettings = pgTable("machine_settings", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().default("My Tormek T8"),
   // Horizontal distance from wheel center to USB post center (mm)
-  usbHorizontalDistance: real("usb_horizontal_distance").notNull().default(50.0), 
-  // Vertical offset if any (usually 0 for Tormek vertical mount relative to some datum, but let's keep it simple)
-  // We'll assume the calculation wants "Height from Wheel Center" or "Height from Housing".
-  // Let's stick to "Height from Housing" and ask for "Wheel Center to Housing Top" distance.
-  wheelCenterToHousingTop: real("wheel_center_to_housing_top").notNull().default(0.0),
+  usbHorizontalDistance: real("usb_horizontal_distance").notNull().default(50.0),
+  // Vertical distance from the machine datum to the wheel center (mm) — "VV" in TormekCalc.
+  wheelCenterToHousingTop: real("wheel_center_to_housing_top").notNull().default(29.0),
+  // USB bar diameter (mm) — "U" in TormekCalc, default 12mm for standard Tormek USB.
+  usbDiameter: real("usb_diameter").notNull().default(12.0),
   
   // Default measurement units preference
   unit: text("unit").notNull().default("mm"), // 'mm' or 'inch'

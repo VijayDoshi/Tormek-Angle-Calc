@@ -53,7 +53,8 @@ export class DatabaseStorage implements IStorage {
         .values({
           ...updates,
           usbHorizontalDistance: updates.usbHorizontalDistance ?? 50.0,
-          wheelCenterToHousingTop: updates.wheelCenterToHousingTop ?? 0.0,
+          wheelCenterToHousingTop: updates.wheelCenterToHousingTop ?? 29.0,
+          usbDiameter: updates.usbDiameter ?? 12.0,
         })
         .returning();
       return created;

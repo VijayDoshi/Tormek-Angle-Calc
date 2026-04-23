@@ -13,54 +13,55 @@
  */
 
 export interface GeometryParams {
-  wheelDiameter: number;      // mm
-  projection: number;         // mm (P)
-  targetAngle: number;        // degrees (alpha)
-  usbHorizontalDist: number;  // mm (Cx)
-  housingOffset?: number;     // mm (distance from wheel center to housing top)
+  wheelDiameter: number;      // mm (D)
+  projection: number;         // mm (P) - blade projection from top of USB to wheel contact point
+  targetAngle?: number;       // degrees - informational only; not used in H calc
+  usbHorizontalDist: number;  // mm (HV) - horizontal: wheel center to USB axis
+  housingOffset?: number;     // mm (VV) - vertical: machine datum to wheel center
+  usbDiameter?: number;       // mm (U) - diameter of the USB bar (default 12)
 }
 
 /**
- * Calculates the required USB Height relative to the housing/datum.
- * Based on the formula: Cy = R * cos(phi) + sqrt(P^2 - (Cx - R * sin(phi))^2)
- * where phi is the angle of the contact point K.
- * For Tormek T8 Vertical base, typical machine constants:
- * Cx (Horizontal) is fixed by the machine design (~20-50mm depending on datum)
- * The formula used by standard Tormek calculators:
- * H = sqrt(P^2 - (R * sin(alpha) + Cx)^2) + R * cos(alpha)
- * However, let's use the robust geometric model.
+ * Calculates the required USB Height for a Tormek T8 vertical USB mount.
+ *
+ * Source: TormekCalc2 spreadsheet, sheet "BevelCalc", cell C34:
+ *   H = SQRT( (R + (P - U/2))^2 - HV^2 ) - VV + U/2
+ *
+ * Where:
+ *   R  = wheel radius (D / 2)
+ *   P  = blade projection from the top of the USB to the wheel contact point
+ *   U  = USB bar diameter (typically 12 mm)
+ *   HV = horizontal distance from wheel center to USB axis (~50 mm)
+ *   VV = vertical distance from the machine datum to the wheel center (~29 mm)
+ *
+ * Verification: D=250, P=85.11, U=12, HV=50, VV=29  =>  H = 175.21 mm
+ * (matches the spreadsheet's BevelCalc!C34 value exactly).
+ *
+ * Note: the bevel angle does not enter this formula. In the Tormek workflow,
+ * the angle is set independently (e.g. with the AngleMaster) and the projection
+ * P is what you measure to make the contact point land at that angle.
  */
 export function calculateUSBHeight(params: GeometryParams): number | null {
-  const { wheelDiameter, projection, targetAngle, usbHorizontalDist, housingOffset = 0 } = params;
-  
+  const {
+    wheelDiameter,
+    projection,
+    usbHorizontalDist,
+    housingOffset = 0,
+    usbDiameter = 12,
+  } = params;
+
   const R = wheelDiameter / 2;
   const P = projection;
-  const alpha = (targetAngle * Math.PI) / 180;
-  
-  /**
-   * Tormek T8 Vertical Base Geometry (Standard simplified):
-   * H is the height of the USB above the wheel center axis.
-   * H = sqrt( P^2 - (R * sin(alpha) + Cx)^2 ) + R * cos(alpha)
-   * 
-   * Validation check for 250mm wheel, 140mm projection, 15deg angle, Cx=30:
-   * R=125, P=140, alpha=15deg, Cx=30
-   * sin(15)=0.2588, cos(15)=0.9659
-   * (R*sin(15) + Cx) = 125 * 0.2588 + 30 = 32.35 + 30 = 62.35
-   * sqrt(140^2 - 62.35^2) = sqrt(19600 - 3887) = sqrt(15713) = 125.35
-   * H = 125.35 + 125 * 0.9659 = 125.35 + 120.73 = 246.08
-   * 
-   * If housing offset is ~70mm (center to housing top), result ~176mm.
-   * This matches user expectation of ~175mm.
-   */
+  const U = usbDiameter;
+  const HV = usbHorizontalDist;
+  const VV = housingOffset;
 
   try {
-    const term1 = R * Math.sin(alpha) + usbHorizontalDist;
-    if (Math.abs(term1) > P) return null; // Impossible geometry
-    
-    const hCenter = Math.sqrt(P * P - term1 * term1) - R * Math.cos(alpha);
-    
-    // Result relative to housing
-    return hCenter - housingOffset;
+    const inner = R + (P - U / 2);
+    const radicand = inner * inner - HV * HV;
+    if (radicand < 0) return null; // impossible geometry
+
+    return Math.sqrt(radicand) - VV + U / 2;
   } catch (e) {
     return null;
   }

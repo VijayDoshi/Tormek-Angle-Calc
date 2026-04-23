@@ -56,6 +56,7 @@ function Calculator() {
       targetAngle: a,
       usbHorizontalDist: settings.usbHorizontalDistance,
       housingOffset: settings.wheelCenterToHousingTop,
+      usbDiameter: settings.usbDiameter ?? 12,
     });
   }, [settings, wheels, wheelId, customDiameter, projection, angle]);
 

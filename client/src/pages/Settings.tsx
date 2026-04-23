@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 const settingsSchema = z.object({
   usbHorizontalDistance: z.coerce.number().min(0, "Must be positive"),
   wheelCenterToHousingTop: z.coerce.number(),
+  usbDiameter: z.coerce.number().min(0.1, "Must be positive"),
   name: z.string().min(1, "Name required"),
 });
 
@@ -27,7 +28,8 @@ export default function SettingsPage() {
     resolver: zodResolver(settingsSchema),
     defaultValues: {
       usbHorizontalDistance: 50,
-      wheelCenterToHousingTop: 0,
+      wheelCenterToHousingTop: 29,
+      usbDiameter: 12,
       name: "My Tormek",
     },
   });
@@ -38,6 +40,7 @@ export default function SettingsPage() {
       form.reset({
         usbHorizontalDistance: settings.usbHorizontalDistance,
         wheelCenterToHousingTop: settings.wheelCenterToHousingTop,
+        usbDiameter: settings.usbDiameter ?? 12,
         name: settings.name,
       });
     }
@@ -102,7 +105,7 @@ export default function SettingsPage() {
               <div className="space-y-3">
                 <Label className="flex items-center gap-2">
                   <ArrowUpFromLine className="w-4 h-4 text-primary" />
-                  Housing Offset (Datum)
+                  Vertical Offset VV (Datum to Wheel Center)
                 </Label>
                 <div className="relative">
                   <Input 
@@ -110,12 +113,32 @@ export default function SettingsPage() {
                     step="0.1" 
                     {...form.register("wheelCenterToHousingTop")} 
                     className="pr-12 bg-muted/30"
+                    data-testid="input-vv"
                   />
                   <span className="absolute right-4 top-2.5 text-sm text-muted-foreground">mm</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Vertical distance from wheel center to the top of the housing (where you measure USB height from). 
-                  If you measure from wheel center directly, set to 0.
+                  Vertical distance from the machine datum (top of housing) to the wheel center. TormekCalc default is ~29mm.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <Ruler className="w-4 h-4 text-primary" />
+                  USB Bar Diameter (U)
+                </Label>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    step="0.1"
+                    {...form.register("usbDiameter")}
+                    className="pr-12 bg-muted/30"
+                    data-testid="input-usb-diameter"
+                  />
+                  <span className="absolute right-4 top-2.5 text-sm text-muted-foreground">mm</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Diameter of the Universal Support Bar. Standard Tormek USB is 12mm.
                 </p>
               </div>
             </div>

@@ -12,8 +12,10 @@ async function seedDatabase() {
   if (!existingSettings) {
     await storage.updateMachineSettings({
       name: "Standard Tormek T8",
-      usbHorizontalDistance: 30.0,
-      wheelCenterToHousingTop: 66.0, // Calibrated: sqrt(140^2 - (125*sin(18)+30)^2) + 125*cos(18) - 175 ~= 66
+      // Defaults from TormekCalc2 spreadsheet (Vertical USB on T8)
+      usbHorizontalDistance: 50.0, // HV
+      wheelCenterToHousingTop: 29.0, // VV
+      usbDiameter: 12.0,            // U
       unit: "mm"
     });
   }
