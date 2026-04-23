@@ -57,7 +57,7 @@ export function calculateUSBHeight(params: GeometryParams): number | null {
     const term1 = R * Math.sin(alpha) + usbHorizontalDist;
     if (Math.abs(term1) > P) return null; // Impossible geometry
     
-    const hCenter = Math.sqrt(P * P - term1 * term1) + R * Math.cos(alpha);
+    const hCenter = Math.sqrt(P * P - term1 * term1) - R * Math.cos(alpha);
     
     // Result relative to housing
     return hCenter - housingOffset;
