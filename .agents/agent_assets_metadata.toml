@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "-Axoz4gQGkW2-FN8CyPAY"
+uri = "file://client/public/app-icon.png"
+type = "image"
+title = "perfect edge app icon"
