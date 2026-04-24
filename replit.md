@@ -34,14 +34,18 @@ The backend provides simple CRUD operations for:
 - Calculator state (session persistence)
 
 ### Data Storage
-- **Database**: PostgreSQL (configured via `DATABASE_URL` environment variable)
-- **Schema Location**: `shared/schema.ts` using Drizzle table definitions
-- **Migrations**: Drizzle Kit with `db:push` command
+- **Primary**: Browser `localStorage` (offline-first, no backend required at runtime).
+  - Keys: `pe.settings.v1`, `pe.wheels.v1`, `pe.state.v1`
+  - All read/write goes through `client/src/hooks/use-tormek.ts` (React Query–wrapped local store).
+- **Legacy**: PostgreSQL schema in `shared/schema.ts` and Express routes in `server/routes.ts` are still present but no longer used by the frontend. They can be removed once the iOS build pipeline is finalized.
 
-Key tables:
-- `machine_settings` - Tormek T8 machine constants (USB horizontal distance, wheel center offset)
-- `wheels` - Grinding wheel profiles with diameters
-- `calculator_state` - Persists last used calculation inputs
+### Native iOS Wrapper (Capacitor)
+The project is configured as a Capacitor app for iOS App Store distribution.
+- `capacitor.config.ts` — App ID `com.perfectedge.anglefinder`, name "Perfect Edge", web dir `dist/public`.
+- `ios/` — Generated Xcode project (commit this).
+- `resources/icon.png`, `resources/splash.png` — Source assets used by `@capacitor/assets` to generate every required iOS size.
+- `client/src/lib/native.ts` — Sets dark status bar and hides splash on launch when running natively.
+- Build pipeline: `npm run build` → `npx cap sync ios` → open `ios/App/App.xcworkspace` in Xcode on a Mac → Archive → upload to App Store Connect.
 
 ### Calculation Logic
 The Tormek geometry calculations are implemented client-side in `client/src/lib/tormek-math.ts`. This uses trigonometric formulas based on:
