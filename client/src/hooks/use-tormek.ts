@@ -30,22 +30,30 @@ const DEFAULT_SETTINGS: MachineSettings = {
   id: 1,
   name: "My Tormek T8",
   usbHorizontalDistance: 50.0,
-  wheelCenterToHousingTop: 32.0,
+  wheelCenterToHousingTop: 29.0,
   usbDiameter: 12.0,
+  jigDiameter: 12.0,
   unit: "mm",
   createdAt: new Date(),
 };
 
-const LEGACY_VV_DEFAULT = 29.0;
-const CALIBRATED_VV_DEFAULT = 32.0;
-
 function migrateSettings(s: MachineSettings): MachineSettings {
-  if (s.wheelCenterToHousingTop === LEGACY_VV_DEFAULT) {
-    const fixed = { ...s, wheelCenterToHousingTop: CALIBRATED_VV_DEFAULT };
-    localStorage.setItem(KEYS.settings, JSON.stringify(fixed));
-    return fixed;
+  let changed = false;
+  let next = { ...s };
+  // Revert the temporary VV=32 patch (replaced by proper jig-diameter correction)
+  if (next.wheelCenterToHousingTop === 32.0) {
+    next.wheelCenterToHousingTop = 29.0;
+    changed = true;
   }
-  return s;
+  // Seed jig diameter for anyone who doesn't have it yet
+  if (next.jigDiameter == null) {
+    next.jigDiameter = 12.0;
+    changed = true;
+  }
+  if (changed) {
+    localStorage.setItem(KEYS.settings, JSON.stringify(next));
+  }
+  return next;
 }
 
 const DEFAULT_WHEELS: Wheel[] = [

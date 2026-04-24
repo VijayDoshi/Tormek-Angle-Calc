@@ -62,6 +62,7 @@ function Calculator() {
         usbHorizontalDist: settings.usbHorizontalDistance,
         housingOffset: settings.wheelCenterToHousingTop,
         usbDiameter: settings.usbDiameter ?? 12,
+        jigDiameter: settings.jigDiameter ?? 12,
       });
     } else {
       const h = parseFloat(usbHeight);
@@ -73,6 +74,7 @@ function Calculator() {
         usbHorizontalDist: settings.usbHorizontalDistance,
         housingOffset: settings.wheelCenterToHousingTop,
         usbDiameter: settings.usbDiameter ?? 12,
+        jigDiameter: settings.jigDiameter ?? 12,
       });
     }
   }, [mode, settings, wheels, wheelId, customDiameter, projection, angle, usbHeight]);

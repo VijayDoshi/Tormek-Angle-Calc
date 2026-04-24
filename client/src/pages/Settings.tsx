@@ -16,6 +16,7 @@ const settingsSchema = z.object({
   usbHorizontalDistance: z.coerce.number().min(0, "Must be positive"),
   wheelCenterToHousingTop: z.coerce.number(),
   usbDiameter: z.coerce.number().min(0.1, "Must be positive"),
+  jigDiameter: z.coerce.number().min(0, "Must be 0 or positive"),
   name: z.string().min(1, "Name required"),
 });
 
@@ -30,6 +31,7 @@ export default function SettingsPage() {
       usbHorizontalDistance: 50,
       wheelCenterToHousingTop: 29,
       usbDiameter: 12,
+      jigDiameter: 12,
       name: "My Tormek",
     },
   });
@@ -41,6 +43,7 @@ export default function SettingsPage() {
         usbHorizontalDistance: settings.usbHorizontalDistance,
         wheelCenterToHousingTop: settings.wheelCenterToHousingTop,
         usbDiameter: settings.usbDiameter ?? 12,
+        jigDiameter: settings.jigDiameter ?? 12,
         name: settings.name,
       });
     }
@@ -139,6 +142,26 @@ export default function SettingsPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Diameter of the Universal Support Bar. Standard Tormek USB is 12mm.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <Ruler className="w-4 h-4 text-primary" />
+                  Jig Diameter (J)
+                </Label>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    step="0.1"
+                    {...form.register("jigDiameter")}
+                    className="pr-12 bg-card border border-border"
+                    data-testid="input-jig-diameter"
+                  />
+                  <span className="absolute right-4 top-2.5 text-sm text-muted-foreground">mm</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Diameter of the knife jig resting on the USB bar. Standard is 12mm. Use 0 if the blade rests directly on the bar with no jig.
                 </p>
               </div>
             </div>

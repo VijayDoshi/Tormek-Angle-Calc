@@ -19,33 +19,30 @@ export interface GeometryParams {
   usbHorizontalDist: number;  // mm (HV) - horizontal: wheel center to USB axis
   housingOffset?: number;     // mm (VV) - vertical: machine datum to wheel center
   usbDiameter?: number;       // mm (U) - diameter of the USB bar (default 12)
+  jigDiameter?: number;       // mm (J) - diameter of the knife jig resting on the USB bar (default 12)
 }
 
 /**
  * Calculates the required USB Height for a Tormek T8 vertical USB mount.
  *
  * Source: TormekCalc2 spreadsheet — combines TormekCalc!G15 (effective
- * projection) with BevelCalc!C34 (USB height). Simplified for a knife
- * laid directly on the USB (no jig).
+ * projection) with BevelCalc!C34 (USB height). Accounts for a round jig
+ * resting on the USB bar (the blade rides on top of the jig).
  *
  *   JG = P - U/2
- *   JC = U/2
+ *   JC = U/2 + J/2          ← corrects for USB radius + jig radius
  *   CG = sqrt(JC^2 + JG^2)
  *   DK = atan(JC / JG)
- *   H  = sqrt(CG^2 + R^2 + 2·CG·R·sin(α - DK) - HV^2) - VV + U/2
+ *   H  = sqrt(CG^2 + R^2 + 2·CG·R·sin(α − DK) − HV^2) − VV + U/2
  *
  * Where:
  *   R  = wheel radius (D / 2)
  *   P  = blade projection from top of USB to wheel contact point
  *   α  = target bevel angle (degrees)
  *   U  = USB bar diameter (typically 12 mm)
+ *   J  = jig diameter (typically 12 mm; use 0 if blade rests directly on USB)
  *   HV = horizontal distance from wheel center to USB axis (~50 mm)
  *   VV = vertical distance from the machine datum to the wheel center (~29 mm)
- *
- * The triangle (wheel center, USB top, contact point) gives the law of
- * cosines term CG² + R² + 2·CG·R·sin(α-DK); subtracting HV² and taking
- * the square root yields the vertical separation, then we adjust for the
- * machine datum (VV) and the USB radius (U/2).
  */
 export function calculateUSBHeight(params: GeometryParams): number | null {
   const {
@@ -55,18 +52,20 @@ export function calculateUSBHeight(params: GeometryParams): number | null {
     usbHorizontalDist,
     housingOffset = 0,
     usbDiameter = 12,
+    jigDiameter = 12,
   } = params;
 
   const R = wheelDiameter / 2;
   const P = projection;
   const U = usbDiameter;
+  const J = jigDiameter;
   const HV = usbHorizontalDist;
   const VV = housingOffset;
   const alpha = (targetAngle * Math.PI) / 180;
 
   try {
     const JG = P - U / 2;
-    const JC = U / 2;
+    const JC = U / 2 + J / 2;
     if (JG <= 0) return null;
 
     const CG = Math.sqrt(JC * JC + JG * JG);
@@ -90,6 +89,7 @@ export interface ProjectionParams {
   usbHorizontalDist: number;  // mm (HV)
   housingOffset?: number;     // mm (VV)
   usbDiameter?: number;       // mm (U)
+  jigDiameter?: number;       // mm (J)
 }
 
 /**
@@ -98,11 +98,11 @@ export interface ProjectionParams {
  *
  * Derivation: starting from
  *   (H + VV - U/2)^2 + HV^2 = CG^2 + R^2 + 2·R·CG·sin(α - DK)
- * and noting that CG·sin(α - DK) = (P - U/2)·sinα - (U/2)·cosα and
- * CG^2 = (U/2)^2 + (P - U/2)^2, this becomes a quadratic in q = P - U/2:
- *   q^2 + 2R·sinα·q + [(U/2)^2 + R^2 - R·U·cosα - LHS] = 0
+ * and noting that CG·sin(α - DK) = (P - U/2)·sinα - (U/2 + J/2)·cosα and
+ * CG^2 = (U/2 + J/2)^2 + (P - U/2)^2, this becomes a quadratic in q = P - U/2:
+ *   q^2 + 2R·sinα·q + [(U/2 + J/2)^2 + R^2 - 2R·(U/2 + J/2)·cosα - LHS] = 0
  * Taking the positive root and adding U/2 back:
- *   P = U/2 - R·sinα + sqrt( LHS - (R·cosα - U/2)^2 )
+ *   P = U/2 - R·sinα + sqrt( LHS - (R·cosα - (U/2 + J/2))^2 )
  */
 export function calculateProjection(params: ProjectionParams): number | null {
   const {
@@ -112,17 +112,19 @@ export function calculateProjection(params: ProjectionParams): number | null {
     usbHorizontalDist,
     housingOffset = 0,
     usbDiameter = 12,
+    jigDiameter = 12,
   } = params;
 
   const R = wheelDiameter / 2;
   const U = usbDiameter;
+  const J = jigDiameter;
   const HV = usbHorizontalDist;
   const VV = housingOffset;
   const alpha = (targetAngle * Math.PI) / 180;
 
   try {
     const lhs = Math.pow(usbHeight + VV - U / 2, 2) + HV * HV;
-    const k = R * Math.cos(alpha) - U / 2;
+    const k = R * Math.cos(alpha) - (U / 2 + J / 2);
     const radicand = lhs - k * k;
     if (radicand < 0) return null;
 

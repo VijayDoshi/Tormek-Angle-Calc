@@ -15,6 +15,8 @@ export const machineSettings = pgTable("machine_settings", {
   wheelCenterToHousingTop: real("wheel_center_to_housing_top").notNull().default(29.0),
   // USB bar diameter (mm) — "U" in TormekCalc, default 12mm for standard Tormek USB.
   usbDiameter: real("usb_diameter").notNull().default(12.0),
+  // Jig diameter (mm) — "J", diameter of the knife jig resting on the USB bar. Default 12mm.
+  jigDiameter: real("jig_diameter").notNull().default(12.0),
   
   // Default measurement units preference
   unit: text("unit").notNull().default("mm"), // 'mm' or 'inch'
