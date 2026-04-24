@@ -110,7 +110,7 @@ function Calculator() {
           
           <div className="relative z-10 text-center space-y-2">
             <h2 className="text-primary-foreground/70 text-sm font-medium uppercase tracking-wider" data-testid="text-result-label">
-              {mode === "height" ? "USB height from base to top of bar" : "Required Projection"}
+              {mode === "height" ? "USB height from base to top of bar" : "Projection (knob to edge)"}
             </h2>
             <div className="flex items-baseline justify-center gap-1">
               <span className="text-7xl font-bold font-display tracking-tight" data-testid="text-result-value">
