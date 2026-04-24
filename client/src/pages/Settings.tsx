@@ -65,7 +65,7 @@ export default function SettingsPage() {
     <Layout title="Machine Settings">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         
-        <Card className="border-none shadow-sm bg-white dark:bg-card">
+        <Card className="steel-card border-none">
           <CardHeader>
             <CardTitle>Configuration</CardTitle>
             <CardDescription>Calibrate for your specific machine geometry.</CardDescription>
@@ -77,7 +77,7 @@ export default function SettingsPage() {
                 <Ruler className="w-4 h-4 text-primary" />
                 Machine Name
               </Label>
-              <Input {...form.register("name")} className="bg-muted/30" />
+              <Input {...form.register("name")} className="bg-card border border-border" />
             </div>
             
             <Separator />
@@ -93,7 +93,7 @@ export default function SettingsPage() {
                     type="number" 
                     step="0.1" 
                     {...form.register("usbHorizontalDistance")} 
-                    className="pr-12 bg-muted/30"
+                    className="pr-12 bg-card border border-border"
                   />
                   <span className="absolute right-4 top-2.5 text-sm text-muted-foreground">mm</span>
                 </div>
@@ -112,7 +112,7 @@ export default function SettingsPage() {
                     type="number" 
                     step="0.1" 
                     {...form.register("wheelCenterToHousingTop")} 
-                    className="pr-12 bg-muted/30"
+                    className="pr-12 bg-card border border-border"
                     data-testid="input-vv"
                   />
                   <span className="absolute right-4 top-2.5 text-sm text-muted-foreground">mm</span>
@@ -132,7 +132,7 @@ export default function SettingsPage() {
                     type="number"
                     step="0.1"
                     {...form.register("usbDiameter")}
-                    className="pr-12 bg-muted/30"
+                    className="pr-12 bg-card border border-border"
                     data-testid="input-usb-diameter"
                   />
                   <span className="absolute right-4 top-2.5 text-sm text-muted-foreground">mm</span>

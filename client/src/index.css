@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,62 +7,78 @@
 :root {
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Outfit', sans-serif;
+  --font-stencil: 'Bebas Neue', sans-serif;
 
-  /* Clean, Minimal, Premium Light Theme */
-  --background: 210 20% 98%;
-  --foreground: 220 15% 15%;
-  
-  --primary: 220 15% 15%;
-  --primary-foreground: 210 20% 98%;
-  
-  --secondary: 220 5% 90%;
-  --secondary-foreground: 220 15% 15%;
-  
-  --muted: 220 5% 93%;
-  --muted-foreground: 220 10% 45%;
-  
-  --accent: 210 30% 94%;
-  --accent-foreground: 220 15% 15%;
-  
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
+  /* Forge / Knifemaker — blackened steel + ember */
+  --background: 24 10% 7%;
+  --foreground: 36 25% 92%;
 
-  --border: 220 10% 90%;
-  --input: 220 10% 90%;
-  --ring: 220 15% 15%;
-  --radius: 1rem;
+  --card: 24 8% 11%;
+  --card-foreground: 36 25% 92%;
+
+  --popover: 24 10% 9%;
+  --popover-foreground: 36 25% 92%;
+
+  --primary: 22 92% 54%;            /* forge ember orange */
+  --primary-foreground: 24 12% 8%;
+
+  --secondary: 24 6% 16%;           /* brushed steel */
+  --secondary-foreground: 36 20% 90%;
+
+  --muted: 24 6% 14%;
+  --muted-foreground: 30 12% 65%;
+
+  --accent: 18 80% 48%;             /* glowing iron */
+  --accent-foreground: 24 12% 8%;
+
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 36 25% 95%;
+
+  --border: 24 8% 18%;
+  --input: 24 8% 18%;
+  --ring: 22 92% 54%;
+  --radius: 0.875rem;
 }
 
 .dark {
-  /* Premium Dark Theme - Deep Blue/Grey */
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  
-  --primary: 210 40% 98%;
-  --primary-foreground: 222 47% 11%;
-  
-  --secondary: 217 33% 17%;
-  --secondary-foreground: 210 40% 98%;
-  
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  
-  --accent: 217 33% 17%;
-  --accent-foreground: 210 40% 98%;
-  
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 210 40% 98%;
-  
-  --border: 217 33% 20%;
-  --input: 217 33% 20%;
-  --ring: 212 27% 84%;
+  --background: 24 10% 7%;
+  --foreground: 36 25% 92%;
+  --card: 24 8% 11%;
+  --card-foreground: 36 25% 92%;
+  --popover: 24 10% 9%;
+  --popover-foreground: 36 25% 92%;
+  --primary: 22 92% 54%;
+  --primary-foreground: 24 12% 8%;
+  --secondary: 24 6% 16%;
+  --secondary-foreground: 36 20% 90%;
+  --muted: 24 6% 14%;
+  --muted-foreground: 30 12% 65%;
+  --accent: 18 80% 48%;
+  --accent-foreground: 24 12% 8%;
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 36 25% 95%;
+  --border: 24 8% 18%;
+  --input: 24 8% 18%;
+  --ring: 22 92% 54%;
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground antialiased font-sans selection:bg-primary/10;
+    @apply text-foreground antialiased font-sans selection:bg-primary/30 selection:text-primary-foreground;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(22 92% 30% / 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(18 80% 25% / 0.10), transparent 60%),
+      repeating-linear-gradient(
+        45deg,
+        hsl(24 8% 9% / 0.5) 0px,
+        hsl(24 8% 9% / 0.5) 2px,
+        transparent 2px,
+        transparent 6px
+      );
+    background-attachment: fixed;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight font-semibold;
   }
@@ -70,18 +86,41 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/50 dark:bg-black/20 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg;
+    @apply bg-card/80 backdrop-blur-xl border border-border shadow-xl;
   }
-  
+
+  .steel-card {
+    background:
+      linear-gradient(160deg, hsl(24 8% 14%) 0%, hsl(24 8% 10%) 100%);
+    border: 1px solid hsl(24 8% 20%);
+    box-shadow:
+      0 1px 0 hsl(36 30% 80% / 0.06) inset,
+      0 20px 40px -20px hsl(0 0% 0% / 0.6);
+  }
+
+  .ember-card {
+    background:
+      radial-gradient(ellipse at top left, hsl(22 92% 45%) 0%, hsl(18 80% 32%) 45%, hsl(20 70% 22%) 100%);
+    box-shadow:
+      0 0 0 1px hsl(22 92% 60% / 0.4) inset,
+      0 30px 60px -20px hsl(22 92% 30% / 0.5),
+      0 0 80px -20px hsl(22 92% 50% / 0.4);
+  }
+
   .input-premium {
     @apply h-12 rounded-xl border-border bg-background px-4 py-2 text-lg focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all duration-200 shadow-sm hover:border-primary/50;
   }
-  
+
   .btn-primary {
     @apply h-12 rounded-xl bg-primary text-primary-foreground font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 px-6;
   }
 
   .btn-secondary {
     @apply h-12 rounded-xl bg-secondary text-secondary-foreground font-medium hover:bg-secondary/80 transition-all duration-200 px-6;
+  }
+
+  .stencil {
+    font-family: var(--font-stencil);
+    letter-spacing: 0.08em;
   }
 }

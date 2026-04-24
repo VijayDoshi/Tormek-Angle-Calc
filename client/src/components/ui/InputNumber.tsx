@@ -14,12 +14,12 @@ interface InputNumberProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export function InputNumber({ label, unit, className, onIncrement, onDecrement, ...props }: InputNumberProps) {
   return (
     <div className={clsx("space-y-2", className)}>
-      <Label className="text-sm font-medium text-muted-foreground ml-1">{label}</Label>
+      <Label className="stencil text-[11px] text-muted-foreground ml-1">{label}</Label>
       <div className="relative flex items-center group">
-        <Input 
-          type="number" 
+        <Input
+          type="number"
           step="0.1"
-          className="pr-12 h-14 text-lg font-medium tabular-nums shadow-sm bg-background border-border/60 hover:border-primary/40 focus:border-primary transition-all"
+          className="pr-12 h-14 text-lg font-medium tabular-nums shadow-sm bg-card border border-border hover:border-primary/50 focus:border-primary focus-visible:ring-1 focus-visible:ring-primary transition-all"
           {...props}
         />
         {unit && (

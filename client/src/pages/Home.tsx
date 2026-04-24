@@ -104,24 +104,26 @@ function Calculator() {
     <Layout title="Calculator">
       <div className="space-y-8">
         
-        {/* RESULT CARD */}
-        <div className="relative overflow-hidden rounded-3xl bg-primary p-8 text-primary-foreground shadow-2xl shadow-primary/20 transition-all duration-300">
-          <div className="absolute top-0 right-0 p-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
-          
+        {/* RESULT CARD — forge ember */}
+        <div className="ember-card relative overflow-hidden rounded-3xl p-8 text-primary-foreground transition-all duration-300">
+          <div className="absolute -top-16 -right-16 h-56 w-56 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 opacity-[0.07] pointer-events-none mix-blend-overlay"
+               style={{ backgroundImage: 'repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 6px)' }} />
+
           <div className="relative z-10 text-center space-y-2">
-            <h2 className="text-primary-foreground/70 text-sm font-medium uppercase tracking-wider" data-testid="text-result-label">
-              {mode === "height" ? "USB height from base to top of bar" : "Projection (knob to edge)"}
+            <h2 className="stencil text-[11px] text-primary-foreground/80" data-testid="text-result-label">
+              {mode === "height" ? "USB Height — Base to Top of Bar" : "Projection — Knob to Edge"}
             </h2>
             <div className="flex items-baseline justify-center gap-1">
-              <span className="text-7xl font-bold font-display tracking-tight" data-testid="text-result-value">
+              <span className="text-7xl font-bold font-display tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.4)]" data-testid="text-result-value">
                 {result !== null ? result.toFixed(1) : "--"}
               </span>
-              <span className="text-xl text-primary-foreground/50 font-medium">mm</span>
+              <span className="text-xl text-primary-foreground/60 font-medium">mm</span>
             </div>
             {result === null && (wheelId ? (
-              <p className="text-sm text-red-300 mt-2">Invalid Geometry</p>
+              <p className="text-sm text-red-200 mt-2">Invalid Geometry</p>
             ) : (
-              <p className="text-sm text-primary-foreground/50 mt-2">Select a wheel to start</p>
+              <p className="text-sm text-primary-foreground/60 mt-2">Select a wheel to start</p>
             ))}
           </div>
         </div>
@@ -144,14 +146,14 @@ function Calculator() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Wheel Selector */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground ml-1">Grinding Wheel</Label>
+              <Label className="stencil text-[11px] text-muted-foreground ml-1">Grinding Wheel</Label>
               <Select value={wheelId} onValueChange={setWheelId}>
-                <SelectTrigger className="h-14 rounded-xl border-border/60 bg-white/50 dark:bg-black/20 text-lg font-medium shadow-sm">
+                <SelectTrigger className="h-14 rounded-xl border border-border bg-card text-lg font-medium shadow-sm hover:border-primary/60 transition-colors" data-testid="select-wheel">
                   <SelectValue placeholder="Select Wheel" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-popover border-border">
                   {wheels.map((w) => (
-                    <SelectItem key={w.id} value={String(w.id)} className="text-base py-3">
+                    <SelectItem key={w.id} value={String(w.id)} className="text-base py-3" data-testid={`option-wheel-${w.id}`}>
                       <span className="font-medium">{w.name}</span>
                     </SelectItem>
                   ))}
