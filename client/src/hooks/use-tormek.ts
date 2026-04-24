@@ -30,11 +30,23 @@ const DEFAULT_SETTINGS: MachineSettings = {
   id: 1,
   name: "My Tormek T8",
   usbHorizontalDistance: 50.0,
-  wheelCenterToHousingTop: 29.0,
+  wheelCenterToHousingTop: 32.0,
   usbDiameter: 12.0,
   unit: "mm",
   createdAt: new Date(),
 };
+
+const LEGACY_VV_DEFAULT = 29.0;
+const CALIBRATED_VV_DEFAULT = 32.0;
+
+function migrateSettings(s: MachineSettings): MachineSettings {
+  if (s.wheelCenterToHousingTop === LEGACY_VV_DEFAULT) {
+    const fixed = { ...s, wheelCenterToHousingTop: CALIBRATED_VV_DEFAULT };
+    localStorage.setItem(KEYS.settings, JSON.stringify(fixed));
+    return fixed;
+  }
+  return s;
+}
 
 const DEFAULT_WHEELS: Wheel[] = [
   { id: 1, name: "SG-250 (New)", diameter: 250.0, isActive: true, createdAt: new Date() },
@@ -76,7 +88,7 @@ function nextId(items: { id: number }[]): number {
 export function useSettings() {
   return useQuery<MachineSettings>({
     queryKey: QK.settings,
-    queryFn: async () => read(KEYS.settings, DEFAULT_SETTINGS),
+    queryFn: async () => migrateSettings(read(KEYS.settings, DEFAULT_SETTINGS)),
   });
 }
 
