@@ -2,11 +2,10 @@ import { useEffect, useState, useMemo } from "react";
 import { Layout } from "@/components/ui/Layout";
 import { useSettings, useWheels, useCalculatorState, useUpdateState } from "@/hooks/use-tormek";
 import { calculateUSBHeight } from "@/lib/tormek-math";
-import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { InputNumber } from "@/components/ui/InputNumber";
-import { Loader2, Ruler, Triangle, CircleDashed } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 function Calculator() {
   const { data: settings } = useSettings();
@@ -159,19 +158,6 @@ function Calculator() {
             />
           </div>
 
-          {/* VISUAL EXPLANATION */}
-          <Card className="p-6 bg-secondary/30 border-none shadow-none rounded-2xl">
-             <div className="flex gap-6 text-sm text-muted-foreground">
-               <div className="flex items-center gap-2">
-                 <div className="p-2 bg-background rounded-lg text-primary"><Triangle className="w-4 h-4" /></div>
-                 <span>Target Bevel</span>
-               </div>
-               <div className="flex items-center gap-2">
-                 <div className="p-2 bg-background rounded-lg text-primary"><Ruler className="w-4 h-4" /></div>
-                 <span>Blade Length</span>
-               </div>
-             </div>
-          </Card>
         </div>
       </div>
     </Layout>
