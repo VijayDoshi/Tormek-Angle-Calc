@@ -1,0 +1,108 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Source Sans Pro",
+      "role": "body"
+    },
+    {
+      "family": "PT Serif",
+      "role": "heading"
+    }
+  ],
+  "colors": {
+    "primary": "#59756F",
+    "secondary": "#6F928A",
+    "accent": "#D02E2E",
+    "background": "#FFFFFF",
+    "textPrimary": "#000000",
+    "link": "#D02E2E"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Source Sans Pro",
+      "heading": "PT Serif"
+    },
+    "fontStacks": {
+      "heading": [
+        "Source Sans Pro",
+        "sans-serif"
+      ],
+      "body": [
+        "PT Serif",
+        "serif"
+      ],
+      "paragraph": [
+        "PT Serif",
+        "serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "32px",
+      "h2": "16.0001px",
+      "body": "17px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "2px"
+  },
+  "components": {
+    "buttonPrimary": {
+      "background": "transparent",
+      "textColor": "#59756F",
+      "borderColor": "#59756F",
+      "borderRadius": "2px",
+      "borderRadiusCorners": {
+        "topLeft": "2px",
+        "topRight": "2px",
+        "bottomRight": "2px",
+        "bottomLeft": "2px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "logo": null,
+    "favicon": "File saved at: attached_assets/favicon.png",
+    "ogImage": "http://magnoliaknife.com/cdn/shop/files/IMG_8859_a2d72090-53e1-4601-821a-11d6fb6e4a7a_1200x1200.jpg?v=1757027902"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "Add to Cart",
+      "reasoning": "The 'Add to Cart' button is the only button present and serves as the main call-to-action for purchasing the product. It uses a distinct border color (#59756F) that aligns with the brand's primary color, making it the most prominent action available."
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "There is no secondary button available with a different background color. The only button present is the primary CTA."
+    },
+    "confidence": 0.9
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "knife enthusiasts and professionals"
+  },
+  "designSystem": {
+    "framework": "custom",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.9,
+    "colors": 0.95,
+    "overall": 0.925
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": false,
+      "llmSucceeded": false,
+      "finalSource": "none"
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}

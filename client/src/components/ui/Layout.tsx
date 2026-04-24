@@ -15,7 +15,7 @@ export function Layout({ children, title, action }: LayoutProps) {
           <div className="flex items-center gap-2">
             <span className="inline-block h-2 w-2 rounded-full bg-primary shadow-[0_0_12px_2px_hsl(var(--primary)/0.7)]" />
             <h1 className="stencil text-2xl text-foreground/95">
-              {title || "TormekCalc"}
+              {title || "Perfect Edge"}
             </h1>
           </div>
           {action}

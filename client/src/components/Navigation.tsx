@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Calculator, Settings, Disc } from "lucide-react";
+import { Calculator, Settings, Disc, BookOpen } from "lucide-react";
 import { clsx } from "clsx";
 
 export function Navigation() {
@@ -7,6 +7,7 @@ export function Navigation() {
 
   const links = [
     { href: "/", label: "Calc", icon: Calculator },
+    { href: "/instructions", label: "How To", icon: BookOpen },
     { href: "/wheels", label: "Wheels", icon: Disc },
     { href: "/settings", label: "Settings", icon: Settings },
   ];

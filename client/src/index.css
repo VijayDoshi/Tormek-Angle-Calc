@@ -100,11 +100,11 @@
 
   .ember-card {
     background:
-      radial-gradient(ellipse at top left, hsl(22 92% 45%) 0%, hsl(18 80% 32%) 45%, hsl(20 70% 22%) 100%);
+      radial-gradient(ellipse at top left, hsl(38 100% 70%) 0%, hsl(28 95% 58%) 35%, hsl(20 88% 46%) 75%, hsl(18 80% 38%) 100%);
     box-shadow:
-      0 0 0 1px hsl(22 92% 60% / 0.4) inset,
-      0 30px 60px -20px hsl(22 92% 30% / 0.5),
-      0 0 80px -20px hsl(22 92% 50% / 0.4);
+      0 0 0 1px hsl(38 100% 80% / 0.45) inset,
+      0 30px 60px -20px hsl(22 92% 35% / 0.55),
+      0 0 90px -20px hsl(28 95% 60% / 0.5);
   }
 
   .input-premium {
