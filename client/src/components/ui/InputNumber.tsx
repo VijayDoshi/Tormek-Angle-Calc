@@ -18,6 +18,7 @@ export function InputNumber({ label, unit, className, onIncrement, onDecrement, 
       <div className="relative flex items-center group">
         <Input
           type="number"
+          inputMode="decimal"
           step="0.1"
           className="pr-12 h-14 text-lg font-medium tabular-nums shadow-sm bg-card border border-border hover:border-primary/50 focus:border-primary focus-visible:ring-1 focus-visible:ring-primary transition-all"
           {...props}

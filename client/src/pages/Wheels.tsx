@@ -170,7 +170,7 @@ function WheelDialog({ open, onOpenChange, mode, defaultValues }: {
             </div>
             <div className="space-y-2">
               <Label htmlFor="diameter">Diameter (mm)</Label>
-              <Input id="diameter" type="number" step="0.1" {...form.register("diameter")} className="h-12" />
+              <Input id="diameter" type="number" inputMode="decimal" step="0.1" {...form.register("diameter")} className="h-12" />
               {form.formState.errors.diameter && <p className="text-xs text-destructive">{form.formState.errors.diameter.message}</p>}
             </div>
           </div>

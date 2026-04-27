@@ -353,6 +353,7 @@ const FieldRow = forwardRef<
         <Input
           id={id}
           type="number"
+          inputMode="decimal"
           step="0.1"
           className="pr-12 h-12"
           data-testid={`input-${id}`}
