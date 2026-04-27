@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import { Layout } from "@/components/ui/Layout";
 import {
   useMachines,
@@ -178,6 +178,7 @@ export default function SettingsPage() {
         <MachineDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} mode="create" />
 
         <MachineDialog
+          key={editingMachine?.id ?? "edit-closed"}
           open={!!editingMachine}
           onOpenChange={(open) => !open && setEditingMachine(null)}
           mode="edit"
@@ -335,20 +336,16 @@ function MachineDialog({
   );
 }
 
-function FieldRow({
-  id,
-  label,
-  description,
-  unit,
-  error,
-  ...inputProps
-}: {
-  id: string;
-  label: string;
-  description: string;
-  unit: string;
-  error?: string;
-} & React.InputHTMLAttributes<HTMLInputElement>) {
+const FieldRow = forwardRef<
+  HTMLInputElement,
+  {
+    id: string;
+    label: string;
+    description: string;
+    unit: string;
+    error?: string;
+  } & React.InputHTMLAttributes<HTMLInputElement>
+>(function FieldRow({ id, label, description, unit, error, ...inputProps }, ref) {
   return (
     <div className="space-y-1.5">
       <Label htmlFor={id}>{label}</Label>
@@ -359,6 +356,7 @@ function FieldRow({
           step="0.1"
           className="pr-12 h-12"
           data-testid={`input-${id}`}
+          ref={ref}
           {...inputProps}
         />
         <span className="absolute right-4 top-3.5 text-sm text-muted-foreground">{unit}</span>
@@ -367,4 +365,4 @@ function FieldRow({
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
-}
+});
