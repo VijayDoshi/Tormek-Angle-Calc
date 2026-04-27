@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/ui/Layout";
 import {
   useMachines,
@@ -206,16 +206,22 @@ function MachineDialog({
   const form = useForm<MachineFormValues>({
     resolver: zodResolver(machineFormSchema),
     defaultValues: DEFAULT_FORM,
-    values: defaultValues
-      ? {
-          name: defaultValues.name,
-          usbHorizontalDistance: defaultValues.usbHorizontalDistance,
-          wheelCenterToHousingTop: defaultValues.wheelCenterToHousingTop,
-          usbDiameter: defaultValues.usbDiameter,
-          jigDiameter: defaultValues.jigDiameter ?? 12,
-        }
-      : undefined,
   });
+
+  // Populate fields whenever the dialog opens with existing data
+  useEffect(() => {
+    if (open && defaultValues) {
+      form.reset({
+        name: defaultValues.name,
+        usbHorizontalDistance: defaultValues.usbHorizontalDistance,
+        wheelCenterToHousingTop: defaultValues.wheelCenterToHousingTop,
+        usbDiameter: defaultValues.usbDiameter,
+        jigDiameter: defaultValues.jigDiameter ?? 12,
+      });
+    } else if (open && !defaultValues) {
+      form.reset(DEFAULT_FORM);
+    }
+  }, [open, defaultValues]);
 
   const onSubmit = (data: MachineFormValues) => {
     if (mode === "create") {
